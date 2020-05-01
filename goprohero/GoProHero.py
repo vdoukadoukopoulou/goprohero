@@ -42,7 +42,7 @@ class GoProHero:
         # extract non-control characters
         output = []
         s = ''
-        for c in unicode(val):
+        for c in str(val):
             if unicodedata.category(c)[0] == 'C':
                 if len(s) > 0:
                     # start a new string if we found a control character
@@ -60,7 +60,7 @@ class GoProHero:
 
     @classmethod
     def _extractModel(self, val):
-        parts = self._splitByControlCharacters(val.decode('hex'))
+        parts = self._splitByControlCharacters(bytes.fromhex(val))
         if len(parts) > 0:
             # the first two chunks of 'HD4.02.01.02.00'
             return '.'.join(parts[0].split('.')[0:2])
@@ -69,7 +69,7 @@ class GoProHero:
 
     @classmethod
     def _extractFirmware(self, val):
-        parts = self._splitByControlCharacters(val.decode('hex'))
+        parts = self._splitByControlCharacters(bytes.fromhex(val))
         if len(parts) > 0:
             # everything except the first two chunks of 'HD4.02.01.02.00'
             return '.'.join(parts[0].split('.')[2:])
@@ -78,7 +78,7 @@ class GoProHero:
 
     @classmethod
     def _extractName(self, val):
-        parts = self._splitByControlCharacters(val.decode('hex'))
+        parts = self._splitByControlCharacters(bytes.fromhex(val))
         if len(parts) > 1:
             return parts[1]
         else:
@@ -522,7 +522,7 @@ class GoProHero:
                 # attempt to contact the camera
                 try:
                     response = urlopen(
-                        url, timeout=self.timeout).read().encode('hex')
+                        url, timeout=self.timeout).read().hex()
                     status['raw'][cmd] = response  # save raw response
 
                     # loop through different parts we know how to translate
@@ -617,7 +617,7 @@ class GoProHero:
                 url, timeout=self.timeout).read()
 
             if toHex:
-                response = response.encode('hex')
+                response = response.hex()
 
             print(response)
         except (HTTPError, URLError, socket.timeout) as e:
