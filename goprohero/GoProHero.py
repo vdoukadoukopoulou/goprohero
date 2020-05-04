@@ -552,7 +552,7 @@ class GoProHero:
         elif 'power' in status and status['power'] == 'sleeping':
             status['summary'] = 'sleeping'
 
-        logging.info('GoProHero.status() - result {}'.format(status))
+        # logging.info('GoProHero.status() - result {}'.format(status))
         return status
 
     def image(self):
